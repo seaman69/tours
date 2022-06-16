@@ -1,7 +1,7 @@
 package com.example.tours.security.services;
 
-import com.example.loginjwt.model.User;
-import com.example.loginjwt.repository.UserRepository;
+import com.example.tours.model.User;
+import com.example.tours.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,6 @@
 package com.example.tours.security.services;
 
-import com.example.loginjwt.model.User;
+import com.example.tours.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

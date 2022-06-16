@@ -1,6 +1,6 @@
 package com.example.tours.security.jwt;
 
-import com.example.loginjwt.security.services.UserDetailsImpl;
+import com.example.tours.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
