@@ -1,8 +1,8 @@
 package com.example.tours.security;
 
-import com.example.loginjwt.security.jwt.AuthEntryPointJwt;
-import com.example.loginjwt.security.jwt.AuthTokenFilter;
-import com.example.loginjwt.security.services.UserDetailsServiceImpl;
+import com.example.tours.security.jwt.AuthEntryPointJwt;
+import com.example.tours.security.jwt.AuthTokenFilter;
+import com.example.tours.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

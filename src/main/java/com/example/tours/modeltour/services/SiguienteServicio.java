@@ -1,6 +1,6 @@
 package com.example.tours.modeltour.services;
 
-import com.example.loginjwt.modeltour.DatabaseSequence;
+import com.example.tours.modeltour.DatabaseSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
