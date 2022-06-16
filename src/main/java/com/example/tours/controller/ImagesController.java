@@ -1,9 +1,9 @@
 package com.example.tours.controller;
 
 
-import com.example.loginjwt.Exceptions.DataNotFound;
-import com.example.loginjwt.mail.EnviarCorreo;
-import com.example.loginjwt.modeltour.Archivo;
+import com.example.tours.Exceptions.DataNotFound;
+import com.example.tours.mail.EnviarCorreo;
+import com.example.tours.modeltour.Archivo;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

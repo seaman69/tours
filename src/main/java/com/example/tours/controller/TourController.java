@@ -1,12 +1,12 @@
 package com.example.tours.controller;
 
 
-import com.example.loginjwt.Exceptions.DataAlraedyExist;
-import com.example.loginjwt.Exceptions.DataNotFound;
-import com.example.loginjwt.mail.EnviarCorreo;
-import com.example.loginjwt.modeltour.*;
-import com.example.loginjwt.modeltour.services.SiguienteServicio;
-import com.example.loginjwt.repository.TourRepo;
+import com.example.tours.Exceptions.DataAlraedyExist;
+import com.example.tours.Exceptions.DataNotFound;
+import com.example.tours.mail.EnviarCorreo;
+import com.example.tours.modeltour.*;
+import com.example.tours.modeltour.services.SiguienteServicio;
+import com.example.tours.repository.TourRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

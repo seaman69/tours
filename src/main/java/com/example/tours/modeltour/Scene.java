@@ -1,8 +1,8 @@
 package com.example.tours.modeltour;
 
 
-import com.example.loginjwt.Exceptions.DataAlraedyExist;
-import com.example.loginjwt.Exceptions.DataNotFound;
+import com.example.tours.Exceptions.DataAlraedyExist;
+import com.example.tours.Exceptions.DataNotFound;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,14 +25,15 @@ public class Scene {
     private String name;
 
     //TODO: Asses need for levels, faceSize and initialViewParameters attributes
-    private String path;
+    private ArrayList<String> path;
     private ArrayList<LinkHotspot> linkHotspotsList;
     private ArrayList<InfoHotspot> infoHotspotsList;
 
     public Scene(int id, String name,String path) {
         this.id = id;
         this.name = name;
-        this.path=path;
+        this.path=new ArrayList<>();
+        this.path.add(path);
         this.linkHotspotsList = new ArrayList<>();
         this.infoHotspotsList = new ArrayList<>();
     }
@@ -46,11 +47,11 @@ public class Scene {
 
     public Scene(){
     }
-    public Scene(String path){
+    /*public Scene(String path){
         this.path=path;
-    }
+    }*/
 
-    public String getPath() {
+    public ArrayList<String> getPath() {
         return path;
     }
 
