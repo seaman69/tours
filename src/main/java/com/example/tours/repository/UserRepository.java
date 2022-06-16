@@ -1,6 +1,6 @@
 package com.example.tours.repository;
 
-import com.example.loginjwt.model.User;
+import com.example.tours.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

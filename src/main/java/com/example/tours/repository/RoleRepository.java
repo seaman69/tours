@@ -1,7 +1,7 @@
 package com.example.tours.repository;
 
-import com.example.loginjwt.model.ERole;
-import com.example.loginjwt.model.Role;
+import com.example.tours.model.ERole;
+import com.example.tours.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
