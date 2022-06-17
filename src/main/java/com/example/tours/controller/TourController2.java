@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/tours2")
+@RequestMapping("/api/tours2/")
 public class TourController2 {
     @Autowired
     private SiguienteServicio siguienteServicio;
@@ -32,7 +32,7 @@ public class TourController2 {
 
 
     @PostMapping("/addtour/{idusuario}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String insertar(@PathVariable("idusuario")String idusuario){
         String idTour= String.valueOf(siguienteServicio.generateSequence(Tour.SEQUENCE_NAME));
         String path=System.getProperty("user.home")+"/toursVirtuales/"+idusuario+"/"+idTour;
@@ -43,7 +43,7 @@ public class TourController2 {
 
 
     @GetMapping("/getlinktour/{idtour}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public String getLink(@PathVariable("idtour")String tour){
         if(tourRepo.existsById(tour)){
             return "redpanda.sytes.net:3000?id="+tour;
@@ -54,10 +54,10 @@ public class TourController2 {
 
 
     @PostMapping("/newscene/{idtour}/{nombreescena}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int addescena(@PathVariable("idtour")String id,@PathVariable("nombreescena")String nombreescena){
         if(tourRepo.findById(id).isPresent()){
-            Tour tour=tourRepo.findById(id).get();
+            Tour tour=tourRepo.findTourById(id);
             int escena=tour.getNumescenas()+1;
             //tour.setNumescenas(escena+1); //analizar si quitar o no
             Scene scene = new Scene(escena, nombreescena);
@@ -70,7 +70,7 @@ public class TourController2 {
         }
     }
     @PostMapping("/newimagescene/{idtour}/{nombreescena}/{idimagen}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int nuevaimagenescena(@PathVariable("idtour")String idtour,@PathVariable("nombreescena")String nombreescena,@PathVariable("idimagen")String idimagen){
         if(tourRepo.existsById(idtour)){
             Tour tour= tourRepo.findById(idtour).get();
@@ -86,7 +86,7 @@ public class TourController2 {
 
     }
     @PostMapping("/deleteimagescene/{idtour}/{nombreescena}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int eliminarScena(@PathVariable("idtour")String idtour,@PathVariable("nombreescena")String nombreescena){
         if(tourRepo.existsById(idtour)){
             Tour tour= tourRepo.findById(idtour).get();
@@ -100,7 +100,7 @@ public class TourController2 {
     }
 
     @GetMapping("getimagesscens/{idtour}")
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public TreeMap<Integer,ArrayList<Image>> getImages(@PathVariable("idtour")String idtour){
         if(tourRepo.existsById(idtour)){
             Tour tour=tourRepo.findById(idtour).get();
