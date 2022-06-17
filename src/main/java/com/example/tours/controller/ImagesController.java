@@ -25,7 +25,7 @@ import java.util.HashMap;
 @CrossOrigin(origins = "*")
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/images")
 public class ImagesController {
 
     @Autowired

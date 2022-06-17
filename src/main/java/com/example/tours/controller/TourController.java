@@ -52,7 +52,7 @@ public class TourController {
     }
 
     //nombreescena: cocina,baño etc
-    @PostMapping("/nuevaescena/{idtour}/{nombreescena}")
+    @PostMapping("/newscene/{idtour}/{nombreescena}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int addescena(@PathVariable("idtour")String id,@PathVariable("nombreescena")String nombreescena){
         if(tourRepo.findById(id).isPresent()){
