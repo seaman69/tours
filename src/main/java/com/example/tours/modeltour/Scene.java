@@ -25,15 +25,14 @@ public class Scene {
     private String name;
 
     //TODO: Asses need for levels, faceSize and initialViewParameters attributes
-    private ArrayList<String> path;
+    private ArrayList<Image> images;
     private ArrayList<LinkHotspot> linkHotspotsList;
     private ArrayList<InfoHotspot> infoHotspotsList;
 
-    public Scene(int id, String name,String path) {
+    public Scene(int id, String name) {
         this.id = id;
         this.name = name;
-        this.path=new ArrayList<>();
-        this.path.add(path);
+        this.images=new ArrayList<>();
         this.linkHotspotsList = new ArrayList<>();
         this.infoHotspotsList = new ArrayList<>();
     }
@@ -45,14 +44,23 @@ public class Scene {
         this.infoHotspotsList = infoHotspotsList;
     }
 
-    public Scene(){
-    }
     /*public Scene(String path){
         this.path=path;
     }*/
 
-    public ArrayList<String> getPath() {
-        return path;
+    public ArrayList<Image> getImages() {
+        return this.images;
+    }
+    public void addImage(Image image){
+        this.images.add(image);
+    }
+    public Image getImagebyId(String idImagen){
+        for (Image image : images) {
+            if (image.getIdImage().equals(idImagen)) {
+                return image;
+            }
+        }
+        return null;
     }
 
     public void updateInfoHotspot(HashMap<String,Object> newInfo){

@@ -48,6 +48,22 @@ public class Tour extends Producto{
 
         return null;
     }
+    public void deleteScenebyName(String nombre){
+        for(int i=0;i<this.scenesList.size();i++){
+            if(scenesList.get(i).getName().equalsIgnoreCase(nombre)){
+                scenesList.remove(i);
+                return;
+            }
+        }
+    }
+    public Scene getScenebyName(String nombre){
+        for(Scene scene: this.scenesList){
+            if(scene.getName().equalsIgnoreCase(nombre)){
+                return scene;
+            }
+        }
+        return null;
+    }
     public void addScene(Scene scene){
         this.scenesList.add(scene);
         this.numescenas = this.scenesList.size();

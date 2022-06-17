@@ -42,10 +42,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
     private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        // mandar el token en la url
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7, headerAuth.length());
+        String headerAuth =request.getParameter("token");
+        System.out.println(request.getParameter("token"));
+        if (StringUtils.hasText(headerAuth) /*&& headerAuth.startsWith("Bearer ")*/) {
+            return headerAuth;
+            //return headerAuth.substring(7, headerAuth.length());
         }
         return null;
     }

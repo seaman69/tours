@@ -4,6 +4,10 @@ package com.example.tours.controller;
 import com.example.tours.Exceptions.DataNotFound;
 import com.example.tours.mail.EnviarCorreo;
 import com.example.tours.modeltour.Archivo;
+import com.example.tours.modeltour.Image;
+import com.example.tours.modeltour.Scene;
+import com.example.tours.repository.TourRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,11 +15,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @CrossOrigin(origins = "*")
@@ -24,19 +28,83 @@ import java.util.HashMap;
 @RequestMapping("/")
 public class ImagesController {
 
+    @Autowired
+    TourRepo tourRepo;
+
     @PostMapping("save")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int guardarImages(@RequestParam("file") MultipartFile file,@RequestParam("carpeta") String carpeta,@RequestParam("nombre") String nombre,@RequestParam("escena")String escena){
-
-        Archivo archivo =new Archivo("/home/daniel/imagenestest/"+carpeta+"/"+escena+"/",nombre,file);
+        String userHomeDir = System.getProperty("user.home");
+        Archivo archivo =new Archivo(userHomeDir+"/imagenestest/"+carpeta+"/"+escena+"/",nombre,file);
         archivo.saveFile(file);
         System.out.println("Zip recibido");
-        //Thread thread= new Thread(imagen);
-        //thread.start();
+
         return 0;
+    }
+    //este es para fotos tomadas de la camara antes de hacer stitc
+    @PostMapping("/saveimagesceneprestitich/{idtour}/{nombreescena}/{idimagen}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public void subirImagenes(@RequestParam("file") MultipartFile file,@RequestParam("nombre")String nombre, @PathVariable("idtour")String idTour,@PathVariable("nombreescena")String escena, @PathVariable("idimagen")String idimagen){
+        if(tourRepo.existsById(idTour)){
+            Image imagen=tourRepo.findById(idTour).get().getScenebyName(nombre).getImagebyId(idimagen);
+            Archivo archivo= new Archivo(imagen.getPath(),nombre,file);
+            archivo.saveFile(file);
+        }else{
+            throw new DataNotFound("str");
+        }
     }
 
 
+    @PostMapping("/subirimagenesescenas/{idtour}/{nombreescena}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public int guardar360(@RequestParam("file") MultipartFile file, @RequestParam("nombre")String nombre, @PathVariable("idtour")String idtour,@PathVariable("nombreescena")String nombreescena){
+        if(tourRepo.existsById(idtour)){
+            Archivo archivo= new Archivo(tourRepo.findById(idtour).get().getPath()+"/",nombre,file);////
+            archivo.saveFile(file);
+            try {
+                archivo.unzip(tourRepo.findById(idtour).get().getPath()+"/"+nombre,tourRepo.findById(idtour).get().getPath()+"/");
+                System.out.println(tourRepo.findById(idtour).get().getPath()+"/"+nombre);
+                File file1= new File(tourRepo.findById(idtour).get().getPath()+"/"+nombre);
+                file1.delete();
+                String[] pathnames;
+
+                // Creates a new File instance by converting the given pathname string
+                // into an abstract pathname
+                File f = new File(tourRepo.findById(idtour).get().getPath()+"/");
+
+                // Populates the array with names of files and directories
+                pathnames = f.list();
+
+                Scene scene=tourRepo.findById(idtour).get().getScenebyName(nombreescena);
+                ArrayList<Image> images = scene.getImages();
+                int i=1;
+                for (String pathname : pathnames) {
+                    // Print the names of files and directories
+                    String [] aux=pathname.split("\\.");
+                    if (aux.length>1){
+                        System.out.println(pathname);
+                        File dir=new File(tourRepo.findById(idtour).get().getPath()+"/"+i+"/fotos");
+                        dir.mkdirs();
+                        InputStream inputStream= Files.newInputStream(Paths.get(tourRepo.findById(idtour).get().getPath() + "/" + pathname));
+                        Files.copy(inputStream, Paths.get(dir.getAbsolutePath()+"/resized.jpg"), StandardCopyOption.REPLACE_EXISTING);
+                        inputStream.close();
+                        i=i+1;
+                    }
+
+
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+
+
+        }else{
+            throw new DataNotFound("str");
+        }
+        return 0;
+    }
     @GetMapping("escenas/{idtour}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public HashMap<Integer,String> getEscenas(@PathVariable("idtour")String idtour){

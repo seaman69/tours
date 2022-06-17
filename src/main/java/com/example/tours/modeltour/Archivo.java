@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -33,7 +34,7 @@ public class Archivo implements Runnable{
 
     public void saveFile(MultipartFile file){
         try (InputStream is = file.getInputStream()) {
-            Files.copy(is, dir.resolve(name));
+            Files.copy(is, dir.resolve(name), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ie) {
            ie.printStackTrace();
         }

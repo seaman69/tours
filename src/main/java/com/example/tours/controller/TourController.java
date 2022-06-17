@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 
 @CrossOrigin(origins = "*")
@@ -40,36 +41,48 @@ public class TourController {
         tourRepo.save(tour);
         return "redpanda.sytes.net:3000?id="+idTour;
     }
-    //
-    @PostMapping("/nuevaescena/{id}")
+    @GetMapping("/getlinktour/{idtour}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public int addescena(@PathVariable("id")String id){
+    public String getLink(@PathVariable("idtour")String tour){
+        if(tourRepo.existsById(tour)){
+            return "redpanda.sytes.net:3000?id="+tour;
+        }else{
+            throw new DataNotFound("");
+        }
+    }
+
+    //nombreescena: cocina,baño etc
+    @PostMapping("/nuevaescena/{idtour}/{nombreescena}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public int addescena(@PathVariable("idtour")String id,@PathVariable("nombreescena")String nombreescena){
         if(tourRepo.findById(id).isPresent()){
             Tour tour=tourRepo.findById(id).get();
             int escena=tour.getNumescenas()+1;
             //tour.setNumescenas(escena+1); //analizar si quitar o no
-            String sceneName = "Scene "+ escena;
-            Scene scene = new Scene(escena,sceneName,tour.getPath()+"/"+escena);
+            Scene scene = new Scene(escena, nombreescena);
             tour.addScene(scene);
-            System.out.println("holi");
+            //System.out.println("holi");
             tourRepo.save(tour);
-
             return 0;
         }else{
             throw new DataNotFound("str");
         }
     }
+
     //esta cosa sube las escenas tomadas con la camara del celular
-    @PostMapping("/subirimagenesescena/{idtour}/{escena}")
+    //se modifica para poder tener varias 360 por escena
+   /* @PostMapping("/subirimagenesescena/{idtour}/{nombreescena}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public void subirImagenes(@RequestParam("file") MultipartFile file,@RequestParam("nombre")String nombre, @PathVariable("idtour")String idTour,@PathVariable("escena")String escena){
+    public void subirImagenes(@RequestParam("file") MultipartFile file,@RequestParam("nombre")String nombre, @PathVariable("idtour")String idTour,@PathVariable("nombreescena")String escena){
         if(tourRepo.existsById(idTour)){
-            Archivo archivo= new Archivo(tourRepo.findById(idTour).get().getPath()+"/"+escena+"/",nombre,file);
+            int imagen=tourRepo.findById(idTour).get().getScenebyName(nombre).getPath().size();
+            Archivo archivo= new Archivo(tourRepo.findById(idTour).get().getPath()+"/"+escena+"/"+imagen+"/",nombre,file);
             archivo.saveFile(file);
         }else{
             throw new DataNotFound("str");
         }
-    }
+    }*/
+    //TODO: rehacer cuando este listo el stich, recuerda que escena va a ser el nombre: cocina, baño etc, y falta un "id" de la imagen" a realizar
     @GetMapping("stitch")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int stitch(@RequestParam("carpeta")String carpeta,@RequestParam("escena")String escena,@RequestParam("correo")String correo)  {
@@ -150,14 +163,15 @@ public class TourController {
 
     }
     //carpeta es = idUsuario
-    @GetMapping("getResultado/{idusuario}/{idproducto}/{escena}")
+    //getResultado/2/1/cocina/2
+    @GetMapping("getResultado/{idusuario}/{idproducto}/{escena}/{imagen}")
     //@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
-    public HttpEntity<byte[]> getResultado(@PathVariable("idusuario") String idusuario, @PathVariable("escena")String escena, @PathVariable("idproducto")String idproducto){
+    public HttpEntity<byte[]> getResultado(@PathVariable("idusuario") String idusuario, @PathVariable("escena")String escena, @PathVariable("idproducto")String idproducto,@PathVariable("imagen")String imagen){
         System.out.println(idusuario+"/"+idproducto+"/"+escena);
         String userHomeDir = System.getProperty("user.home");
         //System.out.printf("The User Home Directory is %s", userHomeDir);
-        File file=new  File(userHomeDir+"/toursVirtuales/"+idusuario+"/"+idproducto+"/"+escena+"/fotos/resized.jpg");
+        File file=new  File(userHomeDir+"/toursVirtuales/"+idusuario+"/"+idproducto+"/"+escena+"/"+imagen+"/fotos/resized.jpg");
         //todo cambiar al los nuevos paths
         try {
             byte[] image = Files.readAllBytes(file.toPath());
@@ -192,6 +206,22 @@ public class TourController {
         }
         return map;
     }
+    //devuelve un mapa con todas las imagenes de todas las escenas de un tour
+    /*
+    @GetMapping("getimagesescenas/{idproducto}")
+    public TreeMap<Integer,ArrayList<String>> getImages(@PathVariable("idproducto")String idproducto){
+        if(tourRepo.existsById(idproducto)){
+            Tour tour=tourRepo.findById(idproducto).get();
+            ArrayList<Scene> arrayList= tour.getScenesList();
+            TreeMap<Integer,ArrayList<String>> map=new TreeMap<>();
+            for(Scene escena: arrayList ){
+                map.put(escena.getId(),escena.getPath());
+            }
+            return map;
+        }else{
+            throw new DataNotFound("");
+        }
+    }*/
     @GetMapping("/numescenas/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int getescenas(@PathVariable("id")String id){
@@ -202,6 +232,7 @@ public class TourController {
             return -1;
         }
     }
+
     @PostMapping("/finalizar/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public int finalizar(@PathVariable("id")String id){
